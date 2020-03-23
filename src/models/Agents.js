@@ -14,11 +14,11 @@ module.exports = {
     })
   },
   // INSERT INTO table1 (field1, field2, ...) VALUES (value1, value2, ...)
-  createAgents: function (name) {
+  createAgents: function (name, usersId, routesId) {
     const table = 'agents'
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (name) VALUES 
-      ('${name}')`, function (err, results, fields) {
+      db.query(`INSERT INTO ${table} (name, users_id, routes_id) VALUES 
+      ('${name}', '${usersId}', '${routesId}' )`, function (err, results, fields) {
         if (err) {
           reject(err)
         } else {

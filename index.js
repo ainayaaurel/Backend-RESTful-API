@@ -1,10 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
 
 // Middleware
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -29,6 +31,8 @@ app.get('/migrate', function (req, res) {
     msg: ' migrate succes'
   }
   res.send(data)
+
+  app.use('/users/picture', express.static('data'))
 })
 // Import router
 const UserRouter = require('./src/routers/Users')

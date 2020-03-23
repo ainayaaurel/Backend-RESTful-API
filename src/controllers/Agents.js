@@ -52,7 +52,7 @@ module.exports = {
     }
     const { id } = req.params
     const { name } = req.body
-    delete req.body.name // Apa fungsi ini???
+    delete req.body.name
     const results = await AgentsModel.updateAgents(id, name)
     if (results) {
       const data = {

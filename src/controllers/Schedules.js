@@ -2,7 +2,33 @@ const SchedulesModel = require('../models/Schedules')
 
 module.exports = {
   read: async function (req, res) {
-    const results = await SchedulesModel.getAllSchedules()
+    let { page, limit, search, sort } = req.query
+    page = parseInt(page) || 1
+    limit = parseInt(limit) || 5
+
+    let key = search && Object.keys(search)[0]
+    let value = search && Object.values(search)[0]
+    search = (search && { key, value }) || { key: 'id', value: '' }
+
+    key = sort && Object.keys(sort)[0]
+    value = sort && Object.values(sort)[0]
+    sort = (sort && { key, value }) || { key: 'id', value: 1 }
+    const conditions = { page, perPage: limit, search, sort }
+
+    const results = await SchedulesModel.getAllSchedules(conditions)
+    conditions.totalData = await SchedulesModel.getAllSchedules(conditions)
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    delete conditions.search
+    delete conditions.sort
+    delete conditions.limit
+
+    const data = {
+      success: true,
+      data: results,
+      pageInfo: conditions
+    }
+    res.send(data)
+    // const results = await SchedulesModel.getAllSchedules()
     if (results) {
       const data = {
         success: true,
@@ -27,12 +53,14 @@ module.exports = {
       }
       res.send(data)
     }
-    const { time } = req.body
-    const results = await SchedulesModel.createSchedules(time)
+    const { time, routesId, bussesId, agentsId } = req.body
+    console.log(req.body)
+    const results = await SchedulesModel.createSchedules(time, routesId, bussesId, agentsId)
     if (results) {
       const data = {
         success: true,
-        msg: `This is ${time} SUCCES Created!!!`
+        msg: 'This is succes created!!!',
+        results
       }
       res.send(data)
     } else {

@@ -27,31 +27,7 @@ module.exports = {
       res.send(data)
     }
   },
-  // read: async function (req, res) {
-  //   console.log(req.user)
-  //   if (req.user.roleId === 3) {
-  //     const results = await UserDetailsModel.getUserDetails(req.user.id)
-  //     if (results) {
-  //       const data = {
-  //         success: true,
-  //         results
-  //       }
-  //       res.send(data)
-  //     } else {
-  //       const data = {
-  //         success: false,
-  //         msg: 'id not found'
-  //       }
-  //       res.send(data)
-  //     }
-  //   } else {
-  //     const data = {
-  //       success: false,
-  //       msg: 'U cant access'
-  //     }
-  //     res.send(data)
-  //   }
-  // },
+
   readSuperAdmin: async function (req, res) {
     if (req.user.roleId !== 1) {
       const data = {
@@ -84,21 +60,23 @@ module.exports = {
       }
       res.send(data)
     }
-    const { name, gender, address, phone, email } = req.body
-    const results = await UserDetailsModel.createUserDetails(name, gender, address, phone, email)
-    if (results) {
-      const data = {
-        success: true,
-        msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
-      }
-      res.send(data)
-    } else {
-      const data = {
-        success: false,
-        msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
-      }
-      res.send(data)
-    }
+    console.log(req.file)
+    // const picture = (req.file && req.file.filename) || null
+    // const { name, gender, address, phone, email } = req.body
+    // const results = await UserDetailsModel.createUserDetails(picture, name, gender, address, phone, email)
+    // if (results) {
+    //   const data = {
+    //     success: true,
+    //     msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
+    //   }
+    //   res.send(data)
+    // } else {
+    //   const data = {
+    //     success: false,
+    //     msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
+    //   }
+    //   res.send(data)
+    // }
   },
   update: async function (req, res) {
     if (req.user.roleId !== 3) {
@@ -108,10 +86,11 @@ module.exports = {
       }
       res.send(data)
     }
+    const picture = (req.file && req.file.filename) || null
     const { id } = req.params
     const { name, gender, address, phone, email } = req.body
     delete req.body.arrival
-    const results = await UserDetailsModel.updateUserDetails(id, name, gender, address, phone, email)
+    const results = await UserDetailsModel.updateUserDetails(id, picture, name, gender, address, phone, email)
     if (results) {
       const data = {
         success: true,

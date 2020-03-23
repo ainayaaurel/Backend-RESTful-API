@@ -1,4 +1,5 @@
 const UsersDetail = require('express').Router()
+
 const UsersDetailControllers = require('../controllers/Users_details')
 
 UsersDetail.get('/', UsersDetailControllers.read)

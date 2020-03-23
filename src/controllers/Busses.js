@@ -2,21 +2,32 @@ const BussesModel = require('../models/Busses')
 
 module.exports = {
   read: async function (req, res) {
-    const results = await BussesModel.getAllBusses()
-    if (results) {
-      const data = {
-        success: true,
-        msg: 'You busses GET Method',
-        results
-      }
-      res.send(data)
-    } else {
-      const data = {
-        success: false,
-        msg: 'you cannot GET Method'
-      }
-      res.send(data)
+    let { page, limit, search, sort } = req.query
+    page = parseInt(page) || 1
+    limit = parseInt(limit) || 5
+
+    let key = search && Object.keys(search)[0]
+    let value = search && Object.values(search)[0]
+    search = (search && { key, value }) || { key: 'name', value: '' }
+
+    key = sort && Object.keys(sort)[0]
+    value = sort && Object.values(sort)[0]
+    sort = (sort && { key, value }) || { key: 'id', value: 1 }
+    const conditions = { page, perPage: limit, search, sort }
+
+    const results = await BussesModel.getAllBusses(conditions)
+    conditions.totalData = await BussesModel.getAllBusses(conditions)
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    delete conditions.search
+    delete conditions.sort
+    delete conditions.limit
+
+    const data = {
+      success: true,
+      data: results,
+      pageInfo: conditions
     }
+    res.send(data)
   },
   create: async function (req, res) {
     if (req.user.roleId !== 2) {

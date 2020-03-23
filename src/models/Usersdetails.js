@@ -31,11 +31,13 @@ module.exports = {
       })
     })
   },
-  createUserDetails: function (name, gender, address, phone, email, usersId) {
+  createUserDetails: function (picture, name, gender, address, phone, email, usersId) {
     const table = 'users_details'
+    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (name, gender, address, phone, email, users_id) VALUES
-      ('${name}', '${gender}', '${address}', '${phone}', '${email}', ${usersId})`, function (err, results, fields) {
+      const sql = `INSERT INTO ${table} (picture, name, gender, address, phone, email, users_id) VALUES
+      (${picture}, '${name}', '${gender}', '${address}', '${phone}', '${email}', '${usersId}')`
+      db.query(sql, function (err, results, fields) {
         if (err) {
           reject(err)
         } else {
@@ -44,10 +46,11 @@ module.exports = {
       })
     })
   },
-  updateUserDetails: function (id, name, gender, address, phone, email) {
+  updateUserDetails: function (id, picture, name, gender, address, phone, email) {
     const table = 'users_details'
+    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
     return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET name='${name}', gender='${gender}', address='${address}',
+      db.query(`UPDATE ${table} SET picture='${picture}', name='${name}', gender='${gender}', address='${address}',
       phone='${phone}', email='${email}' WHERE id=${id}`, function (err, results, fields) {
         if (err) {
           console.log(err)
