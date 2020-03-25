@@ -16,16 +16,20 @@ module.exports = {
     const conditions = { page, perPage: limit, search, sort }
 
     const results = await BussesModel.getAllBusses(conditions)
-    conditions.totalData = await BussesModel.getAllBusses(conditions)
-    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    const totalDataBus = await BussesModel.getTotalBusses(conditions)
+    console.log(totalDataBus[0].total)
+    conditions.totalData = totalDataBus[0].total
+    // conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    // conditions.nextLink = (page >= conditions.totalPage ? null : process.env.APP_URI.concat(`users?page=${page + 1}`))
+    // conditions.prevLink = (page <= 1 ? null : process.env.APP_URI.concat(`users?page=${page - 1}`))
     delete conditions.search
     delete conditions.sort
     delete conditions.limit
 
     const data = {
-      success: true,
-      data: results,
-      pageInfo: conditions
+      success: 'Success!',
+      pageInfo: conditions,
+      data: results
     }
     res.send(data)
   },
@@ -37,12 +41,12 @@ module.exports = {
       }
       res.send(data)
     }
-    const { name, classbus, sheets } = req.body
-    const results = await BussesModel.createBusses(name, classbus, sheets)
+    const { name, classbus, sheets, price, agentsId } = req.body
+    const results = await BussesModel.createBusses(name, classbus, sheets, price, agentsId)
     if (results) {
       const data = {
         success: true,
-        msg: `This is bus ${name} type class ${classbus} for ${sheets} sheets SUCCES Created!!!`
+        msg: `This is bus ${name} type class ${classbus} for ${sheets}, price ${price} ${agentsId}sheets SUCCES Created!!!`
       }
       res.send(data)
     } else {
@@ -62,20 +66,20 @@ module.exports = {
       res.send(data)
     }
     const { id } = req.params
-    const { name, classbus, sheets } = req.body
+    const { name, classbus, sheets, price, agentsId } = req.body
     delete req.body.code
-    const results = await BussesModel.updateBusses(id, name, classbus, sheets)
+    const results = await BussesModel.updateBusses(id, name, classbus, sheets, price, agentsId)
     if (results) {
       const data = {
         success: true,
-        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets} SUCCESFULLY UPDATE`,
+        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, ${agentsId} SUCCESFULLY UPDATE`,
         data: { id, ...req.body }
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets} FAILED TO UPDATE`,
+        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, ${agentsId} FAILED TO UPDATE`,
         data: { id, ...req.body }
       }
       res.send(data)

@@ -1,13 +1,61 @@
 const db = require('../utils/db')
 
 module.exports = {
-  getAllRoutes: function () {
-    const table = 'routes'
+  getRoutesById: function (id) {
     return new Promise(function (resolve, reject) {
-      db.query(`SELECT * FROM ${table}`, function (err, results, fields) {
+      const sql = `SELECT * FROM users WHERE id=${id}`
+      console.log(sql)
+      db.query(sql, function (err, results, fields) {
         if (err) {
           reject(err)
         } else {
+          resolve(results[0])
+        }
+      })
+    })
+  },
+
+  getAllRoutes: function (conditions = {}) {
+    let { page, perPage, sort, search } = conditions
+    page = page || 1
+    perPage = perPage || 5
+    sort = sort || { key: 'id', value: 1 }
+    search = search || { key: 'departure_at', value: '' }
+    const table = 'routes'
+    return new Promise(function (resolve, reject) {
+      const sql = `
+      SELECT * FROM ${table}
+      WHERE ${search.key} LIKE '${search.value}%'
+      ORDER BY ${sort.key} ${sort.value ? 'ASC' : 'DESC'}
+      LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
+      console.log(sql)
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          console.log(results)
+          resolve(results)
+        }
+      })
+    })
+  },
+  getTotalRoutes: function (conditions) {
+    let { page, perPage, sort, search } = conditions
+    page = page || 1
+    perPage = perPage || 5
+    sort = sort || { key: 'id', value: 1 }
+    search = search || { key: 'departure_at', value: '' }
+    const table = 'routes'
+    return new Promise(function (resolve, reject) {
+      const sql = `
+      SELECT COUNT (*) AS total FROM ${table}
+      WHERE ${search.key} LIKE '${search.value}%'`
+      console.log(sql)
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          console.log(results)
           resolve(results)
         }
       })
@@ -55,3 +103,15 @@ module.exports = {
     })
   }
 }
+// getAllRoutes: function () {
+//     const table = 'routes'
+//     return new Promise(function (resolve, reject) {
+//       db.query(`SELECT * FROM ${table}`, function (err, results, fields) {
+//         if (err) {
+//           reject(err)
+//         } else {
+//           resolve(results)
+//         }
+//       })
+//     })
+//   },
