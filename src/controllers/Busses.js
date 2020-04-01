@@ -3,12 +3,13 @@ const BussesModel = require('../models/Busses')
 module.exports = {
   read: async function (req, res) {
     let { page, limit, search, sort } = req.query
+    console.log('assaaa', req.query)
     page = parseInt(page) || 1
     limit = parseInt(limit) || 5
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
-    search = (search && { key, value }) || { key: 'name', value: '' }
+    search = (search && { key, value }) || { key: '', value: '' }
 
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
@@ -17,11 +18,10 @@ module.exports = {
 
     const results = await BussesModel.getAllBusses(conditions)
     const totalDataBus = await BussesModel.getTotalBusses(conditions)
-    console.log(totalDataBus[0].total)
+    console.log(totalDataBus)
+    console.log(results)
     conditions.totalData = totalDataBus[0].total
-    // conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
-    // conditions.nextLink = (page >= conditions.totalPage ? null : process.env.APP_URI.concat(`users?page=${page + 1}`))
-    // conditions.prevLink = (page <= 1 ? null : process.env.APP_URI.concat(`users?page=${page - 1}`))
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
     delete conditions.search
     delete conditions.sort
     delete conditions.limit
@@ -33,16 +33,33 @@ module.exports = {
     }
     res.send(data)
   },
-  create: async function (req, res) {
-    if (req.user.roleId !== 2) {
-      const data = {
-        success: false,
-        msg: 'Only Admin can access this feature'
-      }
-      res.send(data)
+  readById: async function (req, res) {
+    const { id } = req.params
+
+    const results = await BussesModel.getBussesById(id)
+
+    const data = {
+      success: 'Success!',
+      data: results
     }
+    res.send(data)
+  },
+  create: async function (req, res) {
+    // if (req.user.roleId !== 2) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin can access this feature'
+    //   }
+    //   res.send(data)
+    // }
     const { name, classbus, sheets, price, agentsId } = req.body
-    const results = await BussesModel.createBusses(name, classbus, sheets, price, agentsId)
+    const results = await BussesModel.createBusses(
+      name,
+      classbus,
+      sheets,
+      price,
+      agentsId
+    )
     if (results) {
       const data = {
         success: true,
@@ -58,41 +75,48 @@ module.exports = {
     }
   },
   update: async function (req, res) {
-    if (req.user.roleId !== 2) {
-      const data = {
-        success: false,
-        msg: 'Only Admin can access this feature'
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 2) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin can access this feature'
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
-    const { name, classbus, sheets, price, agentsId } = req.body
+    const { name, classbus, sheets, price } = req.body
     delete req.body.code
-    const results = await BussesModel.updateBusses(id, name, classbus, sheets, price, agentsId)
+    console.log(req.body)
+    const results = await BussesModel.updateBusses(
+      id,
+      name,
+      classbus,
+      sheets,
+      price
+    )
     if (results) {
       const data = {
         success: true,
-        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, ${agentsId} SUCCESFULLY UPDATE`,
+        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, SUCCESFULLY UPDATE`,
         data: { id, ...req.body }
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, ${agentsId} FAILED TO UPDATE`,
+        msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, FAILED TO UPDATE`,
         data: { id, ...req.body }
       }
       res.send(data)
     }
   },
   delete: async function (req, res) {
-    if (req.user.roleId !== 2) {
-      const data = {
-        success: false,
-        msg: 'Only Admin can access this feature'
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 2) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin can access this feature'
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
     const results = await BussesModel.deleteBusses(id)
     if (results) {

@@ -1,19 +1,24 @@
 const db = require('../utils/db')
 
 module.exports = {
-  checkReservatian: function (id) {
-    return new Promise(function (resolve, reject) {
-      db.query(`SELECT routes.departure_at, routes.arrival_at, agents.name, schedules.time, busses.name, busses.class, busses.sheets FROM reservation JOIN schedules ON schedules.id = reservation.schedules_id JOIN routes ON routes.id = reservation.routes_id JOIN agents ON agents.id = reservation.agents_id JOIN busses ON busses.id = reservation.busses_id WHERE reservation.id = ${id}`
-        , function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            console.log(results)
-            resolve(results)
-          }
-        })
-    })
-  },
+//   checkReservatian: function (id) {
+//     return new Promise(function (resolve, reject) {
+//       const sql = (`SELECT routes.departure_at, routes.arrival_at, agents.name, 
+//       schedules.time, busses.name, busses.class, busses.sheets FROM reservation JOIN schedules ON 
+//       schedules.id = reservation.schedules_id JOIN routes ON routes.id = reservation.routes_id 
+//       JOIN agents ON agents.id = reservation.agents_id JOIN busses ON busses.id = reservation.busses_id 
+//       WHERE reservation.id = ${id}`)
+//       db.query(sql, function (err, results, fields) {
+//         if (err) {
+//           reject(err)
+//         } else {
+//           console.log(results)
+//           resolve(results)
+//         }
+//       })
+//   })
+// },
+
   createReservations: function (routesId, schedulesId, agentsId, bussesId) {
     const table = 'reservation'
     return new Promise(function (resolve, reject) {

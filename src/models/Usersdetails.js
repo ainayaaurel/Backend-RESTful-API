@@ -1,19 +1,7 @@
 const db = require('../utils/db')
 
 module.exports = {
-  getAllUserDetails: function () {
-    const table = 'users_details'
-    return new Promise(function (resolve, reject) {
-      db.query(`SELECT * FROM ${table}`, function (err, results, fields) {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(results)
-        }
-      })
-    })
-  },
-  getUserDetails: function (id) {
+  getUserDetailsById: function (id) {
     const table = 'users_details'
     return new Promise(function (resolve, reject) {
       const sql = `SELECT * FROM ${table} WHERE users_id=${id}`
@@ -31,12 +19,17 @@ module.exports = {
       })
     })
   },
-  createUserDetails: function (picture, name, gender, address, phone, email, usersId) {
+  getAllUserDetails: function (conditions = {}) {
+    let { page, perPage, sort, search } = conditions
+    sort = sort || { key: 'id', value: 1 }
+    search = search || { key: '', value: '' }
     const table = 'users_details'
-    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
     return new Promise(function (resolve, reject) {
-      const sql = `INSERT INTO ${table} (picture, name, gender, address, phone, email, users_id) VALUES
-      (${picture}, '${name}', '${gender}', '${address}', '${phone}', '${email}', '${usersId}')`
+      const sql = `SELECT * FROM ${table}
+      WHERE name LIKE '${search.value}%'
+      ORDER by id ${sort.value ? 'ASC' : 'DESC'}
+      LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
+      console.log('showdata usersdet', sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
           reject(err)
@@ -46,12 +39,58 @@ module.exports = {
       })
     })
   },
-  updateUserDetails: function (id, picture, name, gender, address, phone, email) {
+  getTotalUsersDetails: function (conditions) {
+    let { search } = conditions
+    search = search || { key: '', value: '' }
+    const table = 'users_details'
+    return new Promise(function (resolve, reject) {
+      const sql = `SELECT COUNT(*) AS total FROM ${table}
+          WHERE name LIKE '${search.value}%'`
+      console.log('ini total data', sql)
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
+  createUserDetails: function (picture, name, gender, address, phone, email, balance, usersId) {
+    const table = 'users_details'
+    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
+    return new Promise(function (resolve, reject) {
+      const sql = `INSERT INTO ${table} (picture, name, gender, address, phone, email, balance, users_id) VALUES
+      (${picture}, '${name}', '${gender}', '${address}', '${phone}', '${email}', '${balance}', '${usersId}')`
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
+  updateSaldo: function (idketikapanggil, saldosaldoan) {
+    const table = 'users_details'
+    return new Promise(function (resolve, reject) {
+      const sql = `UPDATE ${table} SET balance='${saldosaldoan}' WHERE users_id=${idketikapanggil}`
+      console.log(sql)
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
+  updateUserDetails: function (id, picture, name, gender, address, phone, email, balance) {
     const table = 'users_details'
     picture = (typeof picture === 'string' ? `'${picture}'` : picture)
     return new Promise(function (resolve, reject) {
       db.query(`UPDATE ${table} SET picture='${picture}', name='${name}', gender='${gender}', address='${address}',
-      phone='${phone}', email='${email}' WHERE id=${id}`, function (err, results, fields) {
+      phone='${phone}', email='${email}', balance='${balance}' WHERE id=${id}`, function (err, results, fields) {
         if (err) {
           console.log(err)
         } else {

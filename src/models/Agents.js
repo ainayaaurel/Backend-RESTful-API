@@ -3,7 +3,7 @@ const db = require('../utils/db')
 module.exports = {
   getAgentsById: function (id) {
     return new Promise(function (resolve, reject) {
-      const sql = `SELECT * FROM users WHERE id=${id}` // beradasarkan agents bus
+      const sql = `SELECT * FROM agents WHERE id=${id}` // beradasarkan agents bus
       console.log(sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
@@ -20,13 +20,13 @@ module.exports = {
     page = page || 1
     perPage = perPage || 5
     sort = sort || { key: 'id', value: 1 }
-    search = search || { key: 'name', value: '' }
+    search = search || { key: '', value: '' }
     const table = 'agents'
     return new Promise(function (resolve, reject) {
       const sql = `
       SELECT * FROM ${table}
-      WHERE name LIKE '${search.value}%'
-      ORDER BY ${sort.key} ${sort.value ? 'ASC' : 'DESC'}
+      WHERE name_agents LIKE '${search.value}%'
+      ORDER BY id ${sort.value ? 'ASC' : 'DESC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
@@ -44,12 +44,12 @@ module.exports = {
     page = page || 1
     perPage = perPage || 5
     sort = sort || { key: 'id', value: 1 }
-    search = search || { key: 'name', value: '' }
+    search = search || { key: '', value: '' }
     const table = 'agents'
     return new Promise(function (resolve, reject) {
       const sql = `
-      SELECT COUNT (*) AS total FROM ${table}
-      WHERE name LIKE '${search.value}%'`
+      SELECT COUNT(*) AS total FROM ${table}
+      WHERE name_agents LIKE '${search.value}%'`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
@@ -62,11 +62,11 @@ module.exports = {
     })
   },
   // INSERT INTO table1 (field1, field2, ...) VALUES (value1, value2, ...)
-  createAgents: function (name, rolesId) {
+  createAgents: function (name) {
     const table = 'agents'
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (name, roles_id) VALUES 
-      ('${name}', '${rolesId}' )`, function (err, results, fields) {
+      db.query(`INSERT INTO ${table} (name_agents) VALUES 
+      ('${name}')`, function (err, results, fields) {
         if (err) {
           reject(err)
         } else {
@@ -77,9 +77,9 @@ module.exports = {
   },
   // UPDATE table1 SET field1=new_value1 WHERE condition
   updateAgents: function (id, name, rolesId) {
-    const table = 'Agents'
+    const table = 'agents'
     return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET name='${name}', roles_id='${rolesId}' WHERE id=${id}`
+      db.query(`UPDATE ${table} SET name_agents='${name}' WHERE id=${id}`
         , function (err, results, fields) {
           if (err) {
             reject(err)
@@ -103,16 +103,3 @@ module.exports = {
     })
   }
 }
-  // getAllAgents: function () {
-  //   const table = 'agents'
-  //   return new Promise(function (resolve, reject) {
-  //     db.query(`SELECT * FROM ${table}`, function (err, results, fields) {
-  //       if (err) {
-  //         reject(err)
-  //       } else {
-  //         resolve(results)
-  //       }
-  //     })
-  //   })
-  // },
-  

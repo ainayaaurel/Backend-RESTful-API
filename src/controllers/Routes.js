@@ -8,7 +8,7 @@ module.exports = {
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
-    search = (search && { key, value }) || { key: 'departure_at', value: '' }
+    search = (search && { key, value }) || { key: '', value: '' }
 
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
@@ -19,7 +19,7 @@ module.exports = {
     const totalDataRoutes = await RoutesModel.getTotalRoutes(conditions)
     console.log(totalDataRoutes[0].total)
     conditions.totalData = totalDataRoutes[0].total
-    // conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
     // conditions.nextLink = (page >= conditions.totalPage ? null : process.env.APP_URI.concat(`users?page=${page + 1}`))
     // conditions.prevLink = (page <= 1 ? null : process.env.APP_URI.concat(`users?page=${page - 1}`))
     delete conditions.search
@@ -29,6 +29,17 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
+      data: results
+    }
+    res.send(data)
+  },
+  readById: async function (req, res) {
+    const { id } = req.params
+
+    const results = await RoutesModel.getRoutesById(id)
+
+    const data = {
+      success: 'Success!',
       data: results
     }
     res.send(data)
@@ -58,17 +69,17 @@ module.exports = {
     }
   },
   update: async function (req, res) {
-    if (req.user.roleId !== 1) {
-      const data = {
-        success: false,
-        msg: 'Only Super Admin Can Access This Feature'
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 1) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Super Admin Can Access This Feature'
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
     const { departure, arrival } = req.body
     delete req.body.arrival
-    const results = await RoutesModel.updateRoutes(departure, arrival)
+    const results = await RoutesModel.updateRoutes(id, departure, arrival)
     if (results) {
       const data = {
         success: true,
@@ -110,20 +121,3 @@ module.exports = {
     }
   }
 }
-// read: async function (req, res) {
-//     const results = await RoutesModel.getAllRoutes()
-//     if (results) {
-//       const data = {
-//         success: true,
-//         msg: 'You GET Method',
-//         results
-//       }
-//       res.send(data)
-//     } else {
-//       const data = {
-//         success: false,
-//         msg: 'You not GET Method'
-//       }
-//       res.send(data)
-//     }
-//   },

@@ -8,7 +8,7 @@ module.exports = {
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
-    search = (search && { key, value }) || { key: 'name', value: '' }
+    search = (search && { key, value }) || { key: '', value: '' }
 
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
@@ -19,9 +19,7 @@ module.exports = {
     const totalDataAgents = await AgentsModel.getTotalAgents(conditions)
     console.log(totalDataAgents[0].total)
     conditions.totalData = totalDataAgents[0].total
-    // conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
-    // conditions.nextLink = (page >= conditions.totalPage ? null : process.env.APP_URI.concat(`users?page=${page + 1}`))
-    // conditions.prevLink = (page <= 1 ? null : process.env.APP_URI.concat(`users?page=${page - 1}`))
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
     delete conditions.search
     delete conditions.sort
     delete conditions.limit
@@ -41,8 +39,8 @@ module.exports = {
       }
       res.send(data)
     }
-    const { name, rolesId } = req.body
-    const results = await AgentsModel.createAgents(name, rolesId)
+    const { name } = req.body
+    const results = await AgentsModel.createAgents(name)
     if (results) {
       const data = {
         success: true,
@@ -58,17 +56,17 @@ module.exports = {
     }
   },
   update: async function (req, res) {
-    if (req.user.roleId !== 2) {
-      const data = {
-        success: false,
-        msg: 'Only Admin can access this feature'
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 2) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin can access this feature'
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
-    const { name, rolesId } = req.body
+    const { name } = req.body
     delete req.body.name
-    const results = await AgentsModel.updateAgents(id, name, rolesId)
+    const results = await AgentsModel.updateAgents(id, name)
     if (results) {
       const data = {
         success: true,
@@ -110,20 +108,3 @@ module.exports = {
     }
   }
 }
-// read: async function (req, res) {
-//     const results = await AgentsModel.getAllAgents()
-//     if (results) {
-//       const data = {
-//         success: true,
-//         msg: 'You Agents GET Method',
-//         results
-//       }
-//       res.send(data)
-//     } else {
-//       const data = {
-//         success: false,
-//         msg: 'you cannot GET Method'
-//       }
-//       res.send(data)
-//     }
-//   },

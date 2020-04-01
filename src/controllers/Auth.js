@@ -26,7 +26,7 @@ module.exports = {
         if (await AuthModel.checkVerifiedUser(info.id)) {
           if (await AuthModel.checkActivatedUser(info.id)) {
             const payload = { id: info.id, username, roleId: info.role_id }
-            const options = { expiresIn: '60m' }
+            const options = { expiresIn: '1200m' }
             const key = process.env.APP_KEY
             const token = jwt.sign(payload, key, options)
             const data = {
@@ -60,7 +60,7 @@ module.exports = {
   },
   register: async function (req, res) {
     const picture = (req.file && req.file.filename) || null
-    const { username, password, name, gender, address, phone, email } = req.body
+    const { username, password, name, gender, address, phone, email, balance } = req.body
     console.log(req.body)
     const checkUser = await AuthModel.checkUsername(username)
     if (checkUser !== 0) {
@@ -72,7 +72,7 @@ module.exports = {
     } else {
       const encryptedPassword = bcrypt.hashSync(password)
       const results = await UserModel.createUser(username, encryptedPassword)
-      const results1 = await UserDetailsModel.createUserDetails(picture, name, gender, address, phone, email, results)
+      const results1 = await UserDetailsModel.createUserDetails(picture, name, gender, address, phone, email, balance, results)
       if (results) {
         if (await AuthModel.createVerificationCode(results, uuid())) {
           const data = {

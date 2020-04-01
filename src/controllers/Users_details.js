@@ -2,56 +2,61 @@ const UserDetailsModel = require('../models/Usersdetails')
 
 module.exports = {
   read: async function (req, res) {
-    if (req.user.roleId !== 3) {
-      const data = {
-        success: false,
-        msg: 'Only general users can access this feature'
-      }
-      res.send(data)
-    }
-    const results = await UserDetailsModel.getUserDetails(req.user.id)
+    let { page, limit, search, sort } = req.query
+    page = parseInt(page) || 1
+    limit = parseInt(limit) || 5
+
+    let key = search && Object.keys(search)[0]
+    let value = search && Object.values(search)[0]
+    search = (search && { key, value }) || { key: '', value: '' }
+
+    key = sort && Object.keys(sort)[0]
+    value = sort && Object.values(sort)[0]
+    sort = (sort && { key, value }) || { key: 'id', value: 1 }
+    const conditions = { page, perPage: limit, search, sort }
+
+    const results = await UserDetailsModel.getAllUserDetails(conditions)
+    const totalDataUsersDetails = await UserDetailsModel.getTotalUsersDetails(conditions)
+    console.log(totalDataUsersDetails)
     console.log(results)
-    if (results) {
-      const data = {
-        success: true,
-        msg: 'You GET all data users',
-        results
-      }
-      res.send(data)
-    } else {
-      const data = {
-        success: false,
-        msg: 'cannot acces your data'
-      }
-      console.log(req.user)
-      res.send(data)
+    conditions.totalData = totalDataUsersDetails[0].total
+    conditions.totalPage = Math.ceil(conditions.totalData / conditions.perPage)
+    delete conditions.search
+    delete conditions.sort
+    delete conditions.limit
+
+    const data = {
+      success: 'Success!',
+      pageInfo: conditions,
+      data: results
     }
+    res.send(data)
   },
 
-  readSuperAdmin: async function (req, res) {
-    if (req.user.roleId !== 1) {
-      const data = {
-        success: false,
-        msg: 'Only Super Admin can access this feature'
-      }
-      res.send(data)
-    }
-    const results = await UserDetailsModel.getAllUserDetails()
-    if (results) {
-      const data = {
-        success: true,
-        msg: 'You GET all data users',
-        results
-      }
-      res.send(data)
-    } else {
-      const data = {
-        success: false,
-        msg: 'You not GET data all users'
-      }
-      res.send(data)
-    }
-  },
+  // readSuperAdmin: async function (req, res) {
+  //   if (req.user.roleId !== 1) {
+  //     const data = {
+  //       success: false,
+  //       msg: 'Only Super Admin can access this feature'
+  //     }
+  //     res.send(data)
+  //   }
+  //   const results = await UserDetailsModel.getAllUserDetails()
+  //   if (results) {
+  //     const data = {
+  //       success: true,
+  //       msg: 'You GET all data users',
+  //       results
+  //     }
+  //     res.send(data)
+  //   } else {
+  //     const data = {
+  //       success: false,
+  //       msg: 'You not GET data all users'
+  //     }
+  //     res.send(data)
+  //   }
+  // },
   create: async function (req, res) {
     if (req.user.roleId !== 3) {
       const data = {
@@ -61,22 +66,6 @@ module.exports = {
       res.send(data)
     }
     console.log(req.file)
-    // const picture = (req.file && req.file.filename) || null
-    // const { name, gender, address, phone, email } = req.body
-    // const results = await UserDetailsModel.createUserDetails(picture, name, gender, address, phone, email)
-    // if (results) {
-    //   const data = {
-    //     success: true,
-    //     msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
-    //   }
-    //   res.send(data)
-    // } else {
-    //   const data = {
-    //     success: false,
-    //     msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS CREATE!!`
-    //   }
-    //   res.send(data)
-    // }
   },
   update: async function (req, res) {
     if (req.user.roleId !== 3) {

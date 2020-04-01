@@ -13,6 +13,19 @@ module.exports = {
       })
     })
   },
+  getUserDetailByUserId: function (id) {
+    const table = 'users'
+    const sql = `SELECT users_details.balance FROM users_details WHERE users_details.users_id =${id}`
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
   createUser: function (username, password, roleId) {
     roleId = roleId || 3
     const table = 'users'
