@@ -5,11 +5,9 @@ module.exports = {
     let { page, limit, search, sort } = req.query
     page = parseInt(page) || 1
     limit = parseInt(limit) || 5
-
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
     search = (search && { key, value }) || { key: '', value: '' }
-
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
     sort = (sort && { key, value }) || { key: 'id', value: 1 }
@@ -27,6 +25,15 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
+      data: results
+    }
+    res.send(data)
+  },
+  readById: async function (req, res) {
+    const { id } = req.params
+    const results = await AgentsModel.getAgentsById(id)
+    const data = {
+      success: 'Success!',
       data: results
     }
     res.send(data)

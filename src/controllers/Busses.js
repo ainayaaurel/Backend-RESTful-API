@@ -63,7 +63,7 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `This is bus ${name} type class ${classbus} for ${sheets}, price ${price} ${agentsId}sheets SUCCES Created!!!`
+        msg: `This is bus ${name} type class ${classbus} for ${sheets}, price ${price}, ${agentsId}sheets SUCCES Created!!!`
       }
       res.send(data)
     } else {

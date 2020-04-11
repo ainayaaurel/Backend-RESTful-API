@@ -32,31 +32,19 @@ module.exports = {
     }
     res.send(data)
   },
-
-  // readSuperAdmin: async function (req, res) {
-  //   if (req.user.roleId !== 1) {
-  //     const data = {
-  //       success: false,
-  //       msg: 'Only Super Admin can access this feature'
-  //     }
-  //     res.send(data)
-  //   }
-  //   const results = await UserDetailsModel.getAllUserDetails()
-  //   if (results) {
-  //     const data = {
-  //       success: true,
-  //       msg: 'You GET all data users',
-  //       results
-  //     }
-  //     res.send(data)
-  //   } else {
-  //     const data = {
-  //       success: false,
-  //       msg: 'You not GET data all users'
-  //     }
-  //     res.send(data)
-  //   }
-  // },
+  readById: async function (req, res) {
+    console.log(req.user)
+    const { id } = req.user
+    const results = await UserDetailsModel.getUserDetailsById(id)
+    console.log(results)
+    if (results) {
+      const data = {
+        success: 'Success!',
+        data: results
+      }
+      res.send(data)
+    }
+  },
   create: async function (req, res) {
     if (req.user.roleId !== 3) {
       const data = {
@@ -66,6 +54,20 @@ module.exports = {
       res.send(data)
     }
     console.log(req.file)
+    const results = await UserDetailsModel.getUserDetailsById(id)
+    if (results) {
+      const data = {
+        success: true,
+        msg: 'can acces this fitur'
+      }
+      res.send(data)
+    } else {
+      const data = {
+        success: false,
+        msg: 'cannot acces'
+      }
+      res.send(data)
+    }
   },
   update: async function (req, res) {
     if (req.user.roleId !== 3) {
@@ -92,6 +94,26 @@ module.exports = {
         success: false,
         msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS NOT UPDATE!`,
         data: { id, ...req.body }
+      }
+      res.send(data)
+    }
+  },
+  updatePicture: async function (req, res) {
+    const picture = (req.file && req.file.filename) || null
+    const { id } = req.user
+    const results = await UserDetailsModel.updatePicture(id, picture)
+    if (results) {
+      const data = {
+        success: true,
+        msg: `${picture} SUCCESS UPDATE!`,
+        data: results
+      }
+      res.send(data)
+    } else {
+      const data = {
+        success: false,
+        msg: `${picture} SUCCESS NOT UPDATE!`,
+        data: results
       }
       res.send(data)
     }

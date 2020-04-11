@@ -25,7 +25,7 @@ module.exports = {
       SELECT * FROM ${table}
       WHERE departure_at LIKE '${search.value}%'
       ORDER BY ${sort.key} ${sort.value ? 'ASC' : 'DESC'}
-      LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
+      OFFSET ${(page - 1) * perPage}`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
@@ -100,3 +100,5 @@ module.exports = {
     })
   }
 }
+
+// LIMIT ${perPage}

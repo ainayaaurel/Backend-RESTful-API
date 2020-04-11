@@ -99,6 +99,21 @@ module.exports = {
       })
     })
   },
+  updatePicture: function (id, picture) {
+    const table = 'users_details'
+    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
+    const sql = `UPDATE ${table} SET picture= ${picture} WHERE users_id=${id}`
+    console.log(sql)
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          console.log(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
   deleteUserDetails: function (id) {
     const table = 'users_details'
     return new Promise(function (resolve, reject) {

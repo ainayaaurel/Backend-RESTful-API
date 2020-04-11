@@ -18,12 +18,13 @@ module.exports = {
     let { page, perPage, sort, search } = conditions
     sort = sort || { key: 'id', value: 1 }
     search = search || { key: '', value: '' }
+    console.log('inisearchapa', search)
     const table = 'busses'
     return new Promise(function (resolve, reject) {
       const sql = `
       SELECT busses.id, busses.name, busses.class, busses.sheets, busses.price, agents.name_agents FROM ${table} JOIN agents ON 
       agents.id = busses.agents_id
-      WHERE busses.name LIKE '${search.value}%'
+      WHERE busses.name LIKE '%${search.value}%'
       ORDER BY busses.id ${sort.value ? 'ASC' : 'DESC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log('show data', sql)
@@ -31,7 +32,7 @@ module.exports = {
         if (err) {
           reject(err)
         } else {
-
+          console.log('result', results)
           resolve(results)
         }
       })
@@ -60,9 +61,11 @@ module.exports = {
   // INSERT INTO table1 (field1, field2, ...) VALUES (value1, value2, ...)
   createBusses: function (name, classbus, sheets, price, agentsId) {
     const table = 'busses'
+    const sql = `INSERT INTO ${table} (name, class, sheets, price, agents_id) VALUES 
+    ('${name}', '${classbus}', '${sheets}', '${price}', '${agentsId}')`
+    console.log('data post', sql)
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (name, class, sheets, price, agents_id) VALUES 
-      ('${name}', '${classbus}', '${sheets}', '${price}', '${agentsId}')`, function (err, results, fields) {
+      db.query(sql, function (err, results, fields) {
         if (err) {
           reject(err)
         } else {

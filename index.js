@@ -33,7 +33,7 @@ app.get('/migrate', function (req, res) {
   }
   res.send(data)
 
-  app.use('/users/picture', express.static('data'))
+
 })
 // Import router
 const UserRouter = require('./src/routers/Users')
@@ -49,8 +49,8 @@ const ReservationRouter = require('./src/routers/Reservation')
 app.use('/users', AuthMiddleware.checkAuthToken, UserRouter)
 app.use('/busses', AuthMiddleware.checkAuthToken, BussesRouter)
 app.use('/agents', AuthMiddleware.checkAuthToken, AgentsRouter)
-app.use('/routes', AuthMiddleware.checkAuthToken, RoutesRouter)
-app.use('/userdetails', UserDetailsRouter)
+app.use('/routes', RoutesRouter)
+app.use('/userdetails', AuthMiddleware.checkAuthToken, UserDetailsRouter)
 app.use('/schedules', AuthMiddleware.checkAuthToken, SchedulesRouter)
 app.use('/auth', AuthRouter)
 app.use('/reservations', AuthMiddleware.checkAuthToken, ReservationRouter)
