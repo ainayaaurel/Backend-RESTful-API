@@ -27,7 +27,7 @@ const type = multer({
 const upload = multer({ storage, type, limits })
 
 Auth.post('/login', AuthControllers.login)
-Auth.post('/register', upload.single('picture'), AuthControllers.register)
+// Auth.post('/register', upload.single('picture'), AuthControllers.register)
 Auth.get('/verify', AuthControllers.verify)
 Auth.post('/forgotpassword', AuthControllers.forgotPassword)
 module.exports = Auth

@@ -55,6 +55,7 @@ const UserDetailsRouter = require('./src/routers/Users_details')
 const SchedulesRouter = require('./src/routers/Schedules')
 const AuthRouter = require('./src/routers/Auth')
 const ReservationRouter = require('./src/routers/Reservation')
+const TopUpRouter = require('./src/routers/TopUp')
 
 // Define Router
 app.use('/users', AuthMiddleware.checkAuthToken, UserRouter)
@@ -65,6 +66,7 @@ app.use('/userdetails', AuthMiddleware.checkAuthToken, UserDetailsRouter)
 app.use('/schedules', SchedulesRouter)
 app.use('/auth', AuthRouter)
 app.use('/reservations', AuthMiddleware.checkAuthToken, ReservationRouter)
+app.use('/topup', AuthMiddleware.checkAuthToken, TopUpRouter)
 
 app.listen(process.env.APP_PORT, function () {
   console.log(`Aplication runs in PORT ${process.env.APP_PORT}`)

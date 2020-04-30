@@ -2,7 +2,7 @@ const SchedulesModel = require('../models/Schedules')
 
 module.exports = {
   read: async function (req, res) {
-    let { page, limit, search, sort } = req.query
+    let { page, limit, search, sort, date } = req.query
     page = parseInt(page) || 1
     limit = parseInt(limit) || 50
 
@@ -13,10 +13,12 @@ module.exports = {
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
     sort = (sort && { key, value }) || { key: 'id', value: 1 }
-    const conditions = { page, perPage: limit, search, sort }
+    const conditions = { page, perPage: limit, search, sort, date }
 
     const results = await SchedulesModel.getAllSchedules(conditions)
-    const totalDataSchedules = await SchedulesModel.getTotalSchedules(conditions)
+    const totalDataSchedules = await SchedulesModel.getTotalSchedules(
+      conditions
+    )
     console.log(totalDataSchedules)
     console.log(results)
     conditions.totalData = totalDataSchedules[0].total
@@ -28,7 +30,7 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -39,7 +41,7 @@ module.exports = {
 
     const data = {
       success: 'Success!',
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -54,18 +56,23 @@ module.exports = {
     console.log(req.user, 'user')
     const { time, routesId, bussesId, agentsId } = req.body
     console.log(req.body)
-    const results = await SchedulesModel.createSchedules(time, routesId, bussesId, agentsId)
+    const results = await SchedulesModel.createSchedules(
+      time,
+      routesId,
+      bussesId,
+      agentsId
+    )
     if (results) {
       const data = {
         success: true,
         msg: 'This is succes created!!!',
-        results
+        results,
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: 'Agents Not Created!!!'
+        msg: 'Agents Not Created!!!',
       }
       res.send(data)
     }
@@ -81,19 +88,25 @@ module.exports = {
     const { id } = req.params
     const { time, routesId, agentsId, bussesId } = req.body
     delete req.body.name // Apa fungsi ini???
-    const results = await SchedulesModel.updateSchedules(id, time, routesId, agentsId, bussesId)
+    const results = await SchedulesModel.updateSchedules(
+      id,
+      time,
+      routesId,
+      agentsId,
+      bussesId
+    )
     if (results) {
       const data = {
         success: true,
         msg: `Bus with ${id}, ${time}, ${routesId}, ${agentsId}, ${bussesId} successfully updated`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `Bus with ${id}, ${time}, ${routesId}, ${agentsId}, ${bussesId} Cannot updated`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     }
@@ -102,7 +115,7 @@ module.exports = {
     if (req.user.roleId !== 2) {
       const data = {
         success: false,
-        msg: 'Only Admin can access this feature'
+        msg: 'Only Admin can access this feature',
       }
       res.send(data)
     }
@@ -111,15 +124,15 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `Schedules with ${id} successfully deleted!!!`
+        msg: `Schedules with ${id} successfully deleted!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: true,
-        msg: `Schedules with ${id} not deleted`
+        msg: `Schedules with ${id} not deleted`,
       }
       res.send(data)
     }
-  }
+  },
 }

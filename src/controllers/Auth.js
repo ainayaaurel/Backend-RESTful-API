@@ -10,10 +10,11 @@ module.exports = {
   login: async function (req, res) {
     const { username, password } = req.body
     const checkUser = await AuthModel.checkUsername(username)
-    if (!checkUser) { // kondisi untuk mngecek ada user di database ato tidak
+    if (!checkUser) {
+      // kondisi untuk mngecek ada user di database ato tidak
       const data = {
         success: false,
-        msg: 'Username or Password NOT INVALID'
+        msg: 'Username or Password NOT INVALID',
       }
       res.send(data)
     } else {
@@ -31,20 +32,20 @@ module.exports = {
             const token = jwt.sign(payload, key, options)
             const data = {
               success: true,
-              token
+              token,
             }
             res.send(data)
           } else {
             const data = {
               success: false,
-              msg: 'User Not deactivated!'
+              msg: 'User Not deactivated!',
             }
             res.send(data)
           }
         } else {
           const data = {
             success: false,
-            msg: 'User is not verified!'
+            msg: 'User is not verified!',
           }
           res.send(data)
         }
@@ -52,7 +53,7 @@ module.exports = {
         console.log('coba')
         const data = {
           success: false,
-          msg: 'Username or Password NOT INVALID'
+          msg: 'Username or Password NOT INVALID',
         }
         res.send(data)
       }
@@ -60,48 +61,75 @@ module.exports = {
   },
   register: async function (req, res) {
     const picture = (req.file && req.file.filename) || null
-    const { username, password, name, gender, address, phone, email, balance } = req.body
+    const {
+      username,
+      password,
+      name,
+      gender,
+      address,
+      phone,
+      email,
+      balance,
+    } = req.body
     console.log(req.body)
     const checkUser = await AuthModel.checkUsername(username)
-    if (checkUser !== 0) {
-      const data = {
-        success: false,
-        msg: 'User already used'
-      }
-      res.send(data)
-    } else {
-      const encryptedPassword = bcrypt.hashSync(password)
-      const results = await UserModel.createUser(username, encryptedPassword)
-      const results1 = await UserDetailsModel.createUserDetails(picture, name, gender, address, phone, email, balance, results)
-      if (results) {
-        if (await AuthModel.createVerificationCode(results, uuid())) {
-          const data = {
-            success: true,
-            msg: 'Register Successfully, Next you can Verify first'
+    const checkEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (checkEmail.test(email)) {
+      if (checkUser !== 0) {
+        const data = {
+          success: false,
+          msg: 'User already used',
+        }
+        res.send(data)
+      } else {
+        const encryptedPassword = bcrypt.hashSync(password)
+        const results = await UserModel.createUser(username, encryptedPassword)
+        const results1 = await UserDetailsModel.createUserDetails(
+          picture,
+          name,
+          gender,
+          address,
+          phone,
+          email,
+          balance,
+          results
+        )
+        if (results) {
+          if (await AuthModel.createVerificationCode(results, uuid())) {
+            const data = {
+              success: true,
+              msg: 'Register Successfully, Next you can Verify first',
+            }
+            res.send(data)
+          } else {
+            const data = {
+              success: false,
+              msg: "Verification code couldn't be generated",
+            }
+            res.send(data)
           }
-          res.send(data)
         } else {
           const data = {
             success: false,
-            msg: 'Verification code couldn\'t be generated'
+            msg: 'Register Failed',
           }
           res.send(data)
         }
-      } else {
-        const data = {
-          success: false,
-          msg: 'Register Failed'
+        if (results1) {
+          const data = {
+            success: true,
+            msg: 'Create Biodata is Success',
+            results1,
+          }
+          res.send(data)
         }
-        res.send(data)
       }
-      if (results1) {
-        const data = {
-          success: true,
-          msg: 'Create Biodata is Success',
-          results1
-        }
-        res.send(data)
+    } else {
+      const data = {
+        success: false,
+        msg: 'Email Not Valid',
       }
+      res.send(data)
     }
   },
   verify: async function (req, res) {
@@ -109,13 +137,13 @@ module.exports = {
     if (await AuthModel.verifyUser(username, code)) {
       const data = {
         success: true,
-        msg: 'User verified successfully, Now you can LOGIN!'
+        msg: 'User verified successfully, Now you can LOGIN!',
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: 'Failed to verify user'
+        msg: 'Failed to verify user',
       }
       res.send(data)
     }
@@ -131,20 +159,20 @@ module.exports = {
         if (generate) {
           const data = {
             success: true,
-            msg: 'Verification code has been sent to Email'
+            msg: 'Verification code has been sent to Email',
           }
           res.send(data)
         } else {
           const data = {
             success: false,
-            msg: 'Failed to generate verification code'
+            msg: 'Failed to generate verification code',
           }
           res.send(data)
         }
       } else {
         const data = {
           success: false,
-          msg: 'Username not found'
+          msg: 'Username not found',
         }
         res.send(data)
       }
@@ -155,23 +183,23 @@ module.exports = {
         if (await AuthModel.forgotPassword(change, encryptedPassword)) {
           const data = {
             success: true,
-            msg: 'Your password has been reset'
+            msg: 'Your password has been reset',
           }
           res.send(data)
         } else {
           const data = {
             success: false,
-            msg: 'Failed to reset password'
+            msg: 'Failed to reset password',
           }
           res.send(data)
         }
       } else {
         const data = {
           success: false,
-          msg: 'Confirm password doesn\'t match'
+          msg: "Confirm password doesn't match",
         }
         res.send(data)
       }
     }
-  }
+  },
 }
