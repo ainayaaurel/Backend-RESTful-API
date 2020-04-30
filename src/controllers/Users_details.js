@@ -16,7 +16,9 @@ module.exports = {
     const conditions = { page, perPage: limit, search, sort }
 
     const results = await UserDetailsModel.getAllUserDetails(conditions)
-    const totalDataUsersDetails = await UserDetailsModel.getTotalUsersDetails(conditions)
+    const totalDataUsersDetails = await UserDetailsModel.getTotalUsersDetails(
+      conditions
+    )
     console.log(totalDataUsersDetails)
     console.log(results)
     conditions.totalData = totalDataUsersDetails[0].total
@@ -28,19 +30,19 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
-      data: results
+      data: results,
     }
     res.send(data)
   },
   readById: async function (req, res) {
-    console.log(req.user)
+    console.log('ini requser', req.user)
     const { id } = req.user
     const results = await UserDetailsModel.getUserDetailsById(id)
     console.log(results)
     if (results) {
       const data = {
         success: 'Success!',
-        data: results
+        data: results,
       }
       res.send(data)
     }
@@ -49,7 +51,7 @@ module.exports = {
     if (req.user.roleId !== 3) {
       const data = {
         success: false,
-        msg: 'Only General User/Consument can access this feature'
+        msg: 'Only General User/Consument can access this feature',
       }
       res.send(data)
     }
@@ -58,13 +60,13 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: 'can acces this fitur'
+        msg: 'can acces this fitur',
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: 'cannot acces'
+        msg: 'cannot acces',
       }
       res.send(data)
     }
@@ -73,7 +75,7 @@ module.exports = {
     if (req.user.roleId !== 3) {
       const data = {
         success: false,
-        msg: 'Only General User/Consument can access this feature'
+        msg: 'Only General User/Consument can access this feature',
       }
       res.send(data)
     }
@@ -81,19 +83,27 @@ module.exports = {
     const { id } = req.params
     const { name, gender, address, phone, email } = req.body
     delete req.body.arrival
-    const results = await UserDetailsModel.updateUserDetails(id, picture, name, gender, address, phone, email)
+    const results = await UserDetailsModel.updateUserDetails(
+      id,
+      picture,
+      name,
+      gender,
+      address,
+      phone,
+      email
+    )
     if (results) {
       const data = {
         success: true,
         msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS UPDATE!`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS NOT UPDATE!`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     }
@@ -101,19 +111,20 @@ module.exports = {
   updatePicture: async function (req, res) {
     const picture = (req.file && req.file.filename) || null
     const { id } = req.user
+    console.log(req.user)
     const results = await UserDetailsModel.updatePicture(id, picture)
     if (results) {
       const data = {
         success: true,
         msg: `${picture} SUCCESS UPDATE!`,
-        data: results
+        data: results,
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `${picture} SUCCESS NOT UPDATE!`,
-        data: results
+        data: results,
       }
       res.send(data)
     }
@@ -122,7 +133,7 @@ module.exports = {
     if (req.user.roleId !== 1) {
       const data = {
         success: false,
-        msg: 'Only Super Admin can access this feature'
+        msg: 'Only Super Admin can access this feature',
       }
       res.send(data)
     }
@@ -131,15 +142,15 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `Routes with ${id} successfully deleted!!!`
+        msg: `Routes with ${id} successfully deleted!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: true,
-        msg: `Routes with ${id} not deleted`
+        msg: `Routes with ${id} not deleted`,
       }
       res.send(data)
     }
-  }
+  },
 }

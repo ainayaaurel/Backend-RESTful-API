@@ -16,7 +16,7 @@ const AuthMiddleware = require('./src/middleware/Auth')
 app.get('/', function (req, res) {
   const data = {
     success: true,
-    msg: 'Welcome to Shuttle Bus-Id'
+    msg: 'Welcome to Shuttle Bus-Id',
   }
   res.send(data)
 })
@@ -29,12 +29,23 @@ app.get('/migrate', function (req, res) {
   require('./src/migrations/Schedules')
   const data = {
     success: true,
-    msg: ' migrate succes'
+    msg: ' migrate succes',
   }
   res.send(data)
-
-
 })
+
+// app.post('/data', upload.single('picture'), (req, res, next) => {
+//   const user = new User({
+//     _id: new mongoose.Types.ObjectId(),
+//     name: req.body.name,
+//     imageURL: req.file.path,
+//   })
+//   user.save().then((result) => {
+//     res.status(201).json({
+//       message: 'User registered successfully!',
+//     })
+//   })
+// })
 // Import router
 const UserRouter = require('./src/routers/Users')
 const BussesRouter = require('./src/routers/Busses')
@@ -51,7 +62,7 @@ app.use('/busses', AuthMiddleware.checkAuthToken, BussesRouter)
 app.use('/agents', AuthMiddleware.checkAuthToken, AgentsRouter)
 app.use('/routes', RoutesRouter)
 app.use('/userdetails', AuthMiddleware.checkAuthToken, UserDetailsRouter)
-app.use('/schedules', AuthMiddleware.checkAuthToken, SchedulesRouter)
+app.use('/schedules', SchedulesRouter)
 app.use('/auth', AuthRouter)
 app.use('/reservations', AuthMiddleware.checkAuthToken, ReservationRouter)
 

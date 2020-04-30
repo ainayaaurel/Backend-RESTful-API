@@ -22,10 +22,7 @@ module.exports = {
     const table = 'routes'
     return new Promise(function (resolve, reject) {
       const sql = `
-      SELECT * FROM ${table}
-      WHERE departure_at LIKE '${search.value}%'
-      ORDER BY ${sort.key} ${sort.value ? 'ASC' : 'DESC'}
-      OFFSET ${(page - 1) * perPage}`
+      SELECT * FROM ${table}`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
@@ -37,6 +34,29 @@ module.exports = {
       })
     })
   },
+
+  // getAllRoutes: function (conditions = {}) {
+  //   let { page, perPage, sort, search } = conditions
+  //   sort = sort || { key: 'id', value: 1 }
+  //   search = search || { key: '', value: '' }
+  //   const table = 'routes'
+  //   return new Promise(function (resolve, reject) {
+  //     const sql = `
+  //     SELECT * FROM ${table}
+  //     WHERE departure_at LIKE '${search.value}%'
+  //     ORDER BY ${sort.key} ${sort.value ? 'ASC' : 'DESC'}
+  //     OFFSET ${(page - 1) * perPage}`
+  //     console.log(sql)
+  //     db.query(sql, function (err, results, fields) {
+  //       if (err) {
+  //         reject(err)
+  //       } else {
+  //         console.log(results)
+  //         resolve(results)
+  //       }
+  //     })
+  //   })
+  // },
   getTotalRoutes: function (conditions) {
     let { search } = conditions
     search = search || { key: '', value: '' }

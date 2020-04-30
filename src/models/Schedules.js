@@ -80,13 +80,13 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       db.query(`UPDATE ${table} SET time='${time}', routes_id='${routesId}', agents_id='${agentsId}, 
       busses_id='${bussesId}' WHERE id=${id}`
-        , function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(results)
-          }
-        })
+      , function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
     })
   },
   // DELETE FROM table1 WHERE condition

@@ -5,7 +5,7 @@ module.exports = {
     let { page, limit, search, sort } = req.query
     console.log('assaaa', req.query)
     page = parseInt(page) || 1
-    limit = parseInt(limit) || 5
+    limit = parseInt(limit) || 50
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
