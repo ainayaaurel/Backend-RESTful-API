@@ -19,7 +19,7 @@ module.exports = {
     })
   },
   getAllSchedules: function (conditions = {}) {
-    let { page, perPage, sort, search, date } = conditions
+    let { page, perPage, sort, search, sortBy, date } = conditions
     sort = sort || { key: 'id', value: 1 }
     search = search || { key: '', value: '' }
     const table = 'schedules'
@@ -29,7 +29,7 @@ module.exports = {
       agents.id = schedules.agents_id JOIN busses 
       ON busses.id = schedules.busses_id 
       WHERE routes.departure_at LIKE '${search.value}%' AND date='${date}'
-      ORDER BY schedules.id ${sort.value ? 'ASC' : 'DESC'}
+      ORDER BY '${sortBy}'  ${parseInt(sort) ? 'DESC' : 'ASC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log('ini query', sql)
       db.query(sql, function (err, results, fields) {

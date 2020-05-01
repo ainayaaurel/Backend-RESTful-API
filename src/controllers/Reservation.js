@@ -26,7 +26,7 @@ module.exports = {
     console.log('ini req.user', req.user)
     // const {id} = req.user || (req.user.id)
     const { id } = req.user
-    const { routesId, bussesId, agentsId, schedulesId } = req.body
+    const { routesId, bussesId, agentsId, schedulesId, seat } = req.body
     const price = await SchedulesModel.getSchedulesById(schedulesId)
     const userSaldo = await UserModel.getUserDetailByUserId(id)
     console.log('ini price', price.price)
@@ -42,11 +42,12 @@ module.exports = {
       if (hasil) {
         // console.log('ini hasil salod', hasil)
         const results = await ReservationsModel.createReservations(
-          users_id,
+          id,
           routesId,
           schedulesId,
           agentsId,
-          bussesId
+          bussesId,
+          seat
         )
         const detailsReservations = await ReservationsModel.dataReservations(
           results.insertId

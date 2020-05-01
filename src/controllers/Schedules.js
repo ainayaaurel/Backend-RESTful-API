@@ -2,7 +2,7 @@ const SchedulesModel = require('../models/Schedules')
 
 module.exports = {
   read: async function (req, res) {
-    let { page, limit, search, sort, date } = req.query
+    let { page, limit, search, sort, sortBy, date } = req.query
     page = parseInt(page) || 1
     limit = parseInt(limit) || 50
 
@@ -10,11 +10,15 @@ module.exports = {
     let value = search && Object.values(search)[0]
     search = (search && { key, value }) || { key: '', value: '' }
 
-    key = sort && Object.keys(sort)[0]
-    value = sort && Object.values(sort)[0]
-    sort = (sort && { key, value }) || { key: 'id', value: 1 }
-    const conditions = { page, perPage: limit, search, sort, date }
+    // key = sort && Object.keys(sort)[0]
+    // value = sort && Object.values(sort)[0]
+    // sort = (sort && { key, value }) || { key: 'id', value: 1 }
 
+    const conditions = { page, perPage: limit, search, sort, sortBy, date }
+    console.log(
+      req.query,
+      'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSssss'
+    )
     const results = await SchedulesModel.getAllSchedules(conditions)
     const totalDataSchedules = await SchedulesModel.getTotalSchedules(
       conditions
