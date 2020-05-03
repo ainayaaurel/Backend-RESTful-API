@@ -22,9 +22,11 @@ module.exports = {
     const table = 'routes'
     return new Promise(function (resolve, reject) {
       const sql = `
-      SELECT * FROM ${table}`
+      SELECT * FROM ${table}
+      WHERE routes.departure_at LIKE '%${search.value}%'`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
+        console.log('sql search', sql)
         if (err) {
           reject(err)
         } else {
@@ -80,14 +82,17 @@ module.exports = {
   createRoutes: function (departure, arrival) {
     const table = 'routes'
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (departure_at, arrival_at) VALUES
-      ('${departure}', '${arrival}')`, function (err, results, fields) {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(results)
+      db.query(
+        `INSERT INTO ${table} (departure_at, arrival_at) VALUES
+      ('${departure}', '${arrival}')`,
+        function (err, results, fields) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(results)
+          }
         }
-      })
+      )
     })
   },
   // UPDATE table1 SET field1=new_value1 WHERE condition
@@ -95,9 +100,8 @@ module.exports = {
     const table = 'routes'
     const sql = `UPDATE ${table} SET departure_at='${departure}', arrival_at='${arrival}' WHERE id=${id}`
     return new Promise(function (resolve, reject) {
-      console.log('sql', sql)
+      console.log('sql update routes', sql)
       db.query(sql, function (err, results, fields) {
-
         if (err) {
           reject(err)
         } else {
@@ -110,7 +114,11 @@ module.exports = {
   deleteRoutes: function (id) {
     const table = 'routes'
     return new Promise(function (resolve, reject) {
-      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (err, results, fields) {
+      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (
+        err,
+        results,
+        fields
+      ) {
         if (err) {
           reject(err)
         } else {
@@ -118,7 +126,7 @@ module.exports = {
         }
       })
     })
-  }
+  },
 }
 
 // LIMIT ${perPage}

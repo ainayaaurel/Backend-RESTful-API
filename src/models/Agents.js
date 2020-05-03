@@ -24,8 +24,9 @@ module.exports = {
     const table = 'agents'
     return new Promise(function (resolve, reject) {
       const sql = `
-      SELECT * FROM ${table}
-      WHERE name_agents LIKE '${search.value}%'
+      SELECT busses.id, busses.name, busses.class, agents.name_agents FROM agents JOIN busses ON 
+      busses.id = agents.id
+      WHERE agents.name_agents LIKE '%${search.value}%'
       ORDER BY id ${sort.value ? 'ASC' : 'DESC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log(sql)
@@ -65,35 +66,43 @@ module.exports = {
   createAgents: function (name) {
     const table = 'agents'
     return new Promise(function (resolve, reject) {
-      db.query(`INSERT INTO ${table} (name_agents) VALUES 
-      ('${name}')`, function (err, results, fields) {
+      db.query(
+        `INSERT INTO ${table} (name_agents) VALUES 
+      ('${name}')`,
+        function (err, results, fields) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(results)
+          }
+        }
+      )
+    })
+  },
+  // UPDATE table1 SET field1=new_value1 WHERE condition
+  updateAgents: function (id, name) {
+    const table = 'agents'
+    const sql = `UPDATE ${table} SET name_agents='${name}' WHERE id=${id}`
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err, results, fields) {
+        console.log('ini sql update', sql)
         if (err) {
           reject(err)
         } else {
           resolve(results)
         }
       })
-    })
-  },
-  // UPDATE table1 SET field1=new_value1 WHERE condition
-  updateAgents: function (id, name, rolesId) {
-    const table = 'agents'
-    return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET name_agents='${name}' WHERE id=${id}`
-        , function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(results)
-          }
-        })
     })
   },
   // DELETE FROM table1 WHERE condition
   deleteAgents: function (id) {
     const table = 'agents'
     return new Promise(function (resolve, reject) {
-      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (err, results, fields) {
+      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (
+        err,
+        results,
+        fields
+      ) {
         if (err) {
           reject(err)
         } else {
@@ -101,5 +110,5 @@ module.exports = {
         }
       })
     })
-  }
+  },
 }

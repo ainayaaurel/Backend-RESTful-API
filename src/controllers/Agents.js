@@ -5,9 +5,11 @@ module.exports = {
     let { page, limit, search, sort } = req.query
     page = parseInt(page) || 1
     limit = parseInt(limit) || 5
+
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
     search = (search && { key, value }) || { key: '', value: '' }
+
     key = sort && Object.keys(sort)[0]
     value = sort && Object.values(sort)[0]
     sort = (sort && { key, value }) || { key: 'id', value: 1 }
@@ -25,7 +27,7 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -34,7 +36,7 @@ module.exports = {
     const results = await AgentsModel.getAgentsById(id)
     const data = {
       success: 'Success!',
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -42,7 +44,7 @@ module.exports = {
     if (req.user.roleId !== 2) {
       const data = {
         success: false,
-        msg: 'Only Admin can access this feature'
+        msg: 'Only Admin can access this feature',
       }
       res.send(data)
     }
@@ -51,13 +53,13 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `This is ${name} SUCCES Created!!!`
+        msg: `This is ${name} SUCCES Created!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: 'Agents Not Created!!!'
+        msg: 'Agents Not Created!!!',
       }
       res.send(data)
     }
@@ -72,20 +74,21 @@ module.exports = {
     // }
     const { id } = req.params
     const { name } = req.body
+    console.log(req.body)
     delete req.body.name
     const results = await AgentsModel.updateAgents(id, name)
     if (results) {
       const data = {
         success: true,
         msg: `Agents with ${id}, ${name}, successfully updated`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `Agents with ${id}, ${name}, successfully updated`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     }
@@ -94,7 +97,7 @@ module.exports = {
     if (req.user.roleId !== 2) {
       const data = {
         success: false,
-        msg: 'Only Admin can access this feature'
+        msg: 'Only Admin can access this feature',
       }
       res.send(data)
     }
@@ -103,15 +106,15 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `Transport with ${id} successfully deleted!!!`
+        msg: `Transport with ${id} successfully deleted!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: true,
-        msg: `Transport with ${id} not deleted`
+        msg: `Transport with ${id} not deleted`,
       }
       res.send(data)
     }
-  }
+  },
 }

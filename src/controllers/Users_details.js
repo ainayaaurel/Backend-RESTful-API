@@ -72,13 +72,13 @@ module.exports = {
     }
   },
   update: async function (req, res) {
-    if (req.user.roleId !== 3) {
-      const data = {
-        success: false,
-        msg: 'Only General User/Consument can access this feature',
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 3) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only General User/Consument can access this feature',
+    //   }
+    //   res.send(data)
+    // }
     const picture = (req.file && req.file.filename) || null
     const { id } = req.params
     const { name, gender, address, phone, email } = req.body
@@ -112,7 +112,9 @@ module.exports = {
     const picture = (req.file && req.file.filename) || null
     const { id } = req.user
     console.log(req.user)
+    console.log(req.file, 'llllllllllllllllllllllllllllllllllll')
     const results = await UserDetailsModel.updatePicture(id, picture)
+    console.log('picture', results)
     if (results) {
       const data = {
         success: true,

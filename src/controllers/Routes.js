@@ -29,7 +29,7 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -40,7 +40,7 @@ module.exports = {
 
     const data = {
       success: 'Success!',
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -48,7 +48,7 @@ module.exports = {
     if (req.user.roleId !== 1) {
       const data = {
         success: false,
-        msg: 'Only Super Admin Can Access This Feature'
+        msg: 'Only Super Admin Can Access This Feature',
       }
       res.send(data)
     }
@@ -57,13 +57,13 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `This bus departure at ${departure} - ${arrival} SUCCESS Create!`
+        msg: `This bus departure at ${departure} - ${arrival} SUCCESS Create!`,
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: `This bus  ${departure} - ${arrival} NOT SUCCESS Create!`
+        msg: `This bus  ${departure} - ${arrival} NOT SUCCESS Create!`,
       }
       res.send(data)
     }
@@ -78,20 +78,21 @@ module.exports = {
     // }
     const { id } = req.params
     const { departure, arrival } = req.body
+    console.log('jsjjjjjjjjjjjj', req.body)
     delete req.body.arrival
     const results = await RoutesModel.updateRoutes(id, departure, arrival)
     if (results) {
       const data = {
         success: true,
         msg: `Bus ${id} routes ${departure} - ${arrival} SUCCESS UPDATE!`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `Bus ${id} routes ${departure} - ${arrival} SUCCESS NOT UPDATE!`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     }
@@ -100,7 +101,7 @@ module.exports = {
     if (req.user.roleId !== 1) {
       const data = {
         success: false,
-        msg: 'Only Super Admin Can Access This Feature'
+        msg: 'Only Super Admin Can Access This Feature',
       }
       res.send(data)
     }
@@ -109,15 +110,15 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `Routes with ${id} successfully deleted!!!`
+        msg: `Routes with ${id} successfully deleted!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: true,
-        msg: `Routes with ${id} not deleted`
+        msg: `Routes with ${id} not deleted`,
       }
       res.send(data)
     }
-  }
+  },
 }
