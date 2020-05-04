@@ -29,9 +29,9 @@ module.exports = {
       agents.id = schedules.agents_id JOIN busses 
       ON busses.id = schedules.busses_id 
       WHERE routes.departure_at LIKE '${search.value}%' AND date='${date}'
-      ORDER BY '${sortBy}'  ${parseInt(sort) ? 'DESC' : 'ASC'}
+      ORDER BY ${sortBy}  ${parseInt(sort.value) ? 'DESC' : 'ASC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
-      console.log('ini query', sql)
+      console.log('ini query', parseInt(sort.value), sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
           reject(err)
@@ -61,37 +61,35 @@ module.exports = {
     })
   },
   // INSERT INTO table1 (field1, field2, ...) VALUES (value1, value2, ...)
-  createSchedules: function (time, routesId, bussesId, agentsId) {
+  createSchedules: function (date, time, routesId, bussesId, agentsId) {
     const table = 'schedules'
+    const sql = `INSERT INTO ${table} (date, time, routes_id, busses_id, agents_id) VALUES 
+    ('${date}', '${time}', '${routesId}', '${bussesId}', '${agentsId}')`
     return new Promise(function (resolve, reject) {
-      db.query(
-        `INSERT INTO ${table} (time, routes_id, busses_id, agents_id) VALUES 
-      ('${time}', '${routesId}', '${bussesId}', '${agentsId}')`,
-        function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(results)
-          }
+      db.query(sql, function (err, results, fields) {
+        console.log(sql, 'kjkjkjkjkjkjkjkjkjkjkjkjkj')
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
         }
-      )
+      })
     })
   },
   // UPDATE table1 SET field1=new_value1 WHERE condition
-  updateSchedules: function (id, time, routesId, agentsId, bussesId) {
+  updateSchedules: function (date, time, routesId, bussesId, agentsId, id) {
     const table = 'schedules'
+    const sql = `UPDATE ${table} SET date='${date}', time='${time}', routes_id='${routesId}', 
+    busses_id='${bussesId}', agents_id='${agentsId}'  WHERE id=${id}`
     return new Promise(function (resolve, reject) {
-      db.query(
-        `UPDATE ${table} SET time='${time}', routes_id='${routesId}', agents_id='${agentsId}, 
-      busses_id='${bussesId}' WHERE id=${id}`,
-        function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(results)
-          }
+      db.query(sql, function (err, results, fields) {
+        console.log('updaatee scheeeeee', sql)
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
         }
-      )
+      })
     })
   },
   // DELETE FROM table1 WHERE condition

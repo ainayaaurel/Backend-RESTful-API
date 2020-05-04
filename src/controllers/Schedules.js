@@ -4,7 +4,7 @@ module.exports = {
   read: async function (req, res) {
     let { page, limit, search, sort, sortBy, date } = req.query
     page = parseInt(page) || 1
-    limit = parseInt(limit) || 50
+    limit = parseInt(limit) || 10
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
@@ -58,9 +58,10 @@ module.exports = {
     //   res.send(data)
     // }
     console.log(req.user, 'user')
-    const { time, routesId, bussesId, agentsId } = req.body
-    console.log(req.body)
+    const { date, time, routesId, bussesId, agentsId } = req.body
+    console.log('iniiiiiiiii', req.body)
     const results = await SchedulesModel.createSchedules(
+      date,
       time,
       routesId,
       bussesId,
@@ -89,15 +90,17 @@ module.exports = {
     //   }
     //   res.send(data)
     // }
+
+    const { date, time, routesId, bussesId, agentsId } = req.body
     const { id } = req.params
-    const { time, routesId, agentsId, bussesId } = req.body
     delete req.body.name // Apa fungsi ini???
     const results = await SchedulesModel.updateSchedules(
-      id,
+      date,
       time,
       routesId,
+      bussesId,
       agentsId,
-      bussesId
+      id
     )
     if (results) {
       const data = {

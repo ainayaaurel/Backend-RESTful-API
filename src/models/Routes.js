@@ -23,7 +23,9 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       const sql = `
       SELECT * FROM ${table}
-      WHERE routes.departure_at LIKE '%${search.value}%'`
+      WHERE routes.departure_at LIKE '%${search.value}%'
+      ORDER BY routes.id ${sort.value ? 'ASC' : 'DESC'}
+      LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log(sql)
       db.query(sql, function (err, results, fields) {
         console.log('sql search', sql)

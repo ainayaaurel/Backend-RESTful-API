@@ -65,18 +65,17 @@ module.exports = {
   // INSERT INTO table1 (field1, field2, ...) VALUES (value1, value2, ...)
   createAgents: function (name) {
     const table = 'agents'
+    const sql = `INSERT INTO ${table} (name_agents) VALUES 
+    ('${name}')`
     return new Promise(function (resolve, reject) {
-      db.query(
-        `INSERT INTO ${table} (name_agents) VALUES 
-      ('${name}')`,
-        function (err, results, fields) {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(results)
-          }
+      db.query(sql, function (err, results, fields) {
+        console.log('ini create', sql)
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
         }
-      )
+      })
     })
   },
   // UPDATE table1 SET field1=new_value1 WHERE condition

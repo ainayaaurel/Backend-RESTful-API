@@ -5,7 +5,7 @@ module.exports = {
     let { page, limit, search, sort } = req.query
     console.log('assaaa', req.query)
     page = parseInt(page) || 1
-    limit = parseInt(limit) || 50
+    limit = parseInt(limit) || 10
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
@@ -29,7 +29,7 @@ module.exports = {
     const data = {
       success: 'Success!',
       pageInfo: conditions,
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -40,7 +40,7 @@ module.exports = {
 
     const data = {
       success: 'Success!',
-      data: results
+      data: results,
     }
     res.send(data)
   },
@@ -63,13 +63,13 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `This is bus ${name} type class ${classbus} for ${sheets}, price ${price}, ${agentsId}sheets SUCCES Created!!!`
+        msg: `This is bus ${name} type class ${classbus} for ${sheets}, price ${price}, ${agentsId}sheets SUCCES Created!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: 'Busses Not Created!!!'
+        msg: 'Busses Not Created!!!',
       }
       res.send(data)
     }
@@ -97,14 +97,14 @@ module.exports = {
       const data = {
         success: true,
         msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, SUCCESFULLY UPDATE`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
         msg: `TRANSPORT with ${id}, ${name}, ${classbus}, ${sheets}, ${price}, FAILED TO UPDATE`,
-        data: { id, ...req.body }
+        data: { id, ...req.body },
       }
       res.send(data)
     }
@@ -122,15 +122,15 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `Transport with ${id} successfully deleted!!!`
+        msg: `Transport with ${id} successfully deleted!!!`,
       }
       res.send(data)
     } else {
       const data = {
         success: true,
-        msg: `Transport with ${id} not deleted`
+        msg: `Transport with ${id} not deleted`,
       }
       res.send(data)
     }
-  }
+  },
 }
