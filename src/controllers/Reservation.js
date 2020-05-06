@@ -52,14 +52,18 @@ module.exports = {
         const detailsReservations = await ReservationsModel.dataReservations(
           results.insertId
         )
-        console.log(detailsReservations)
+        console.log('sssssssssssssssss', results)
+        console.log(
+          'resrvasiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',
+          detailsReservations
+        )
         if (results) {
           const data = {
             success: true,
             msg:
               'Your reservation is successfully, please check your order is correct, before making payment',
             data: req.body,
-            detailsReservations,
+            detailsReservations: results.insertId,
           }
           res.send(data)
         } else {

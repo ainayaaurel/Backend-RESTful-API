@@ -25,7 +25,7 @@ module.exports = {
       const sql = `SELECT  reservation.id as reservationId, reservation.seat , routes.departure_at, routes.arrival_at, agents.name_agents,
       schedules.time,schedules.date, busses.name, busses.class, busses.price, users_details.balance FROM ${table} JOIN schedules ON
       schedules.id = reservation.schedules_id JOIN routes ON routes.id = reservation.routes_id
-      JOIN agents ON agents.id = reservation.agents_id JOIN users_details ON users_details.users_id = reservation.users_id JOIN busses ON busses.id = reservation.busses_id WHERE reservation.id = ${id}`
+      JOIN agents ON agents.id = reservation.agents_id JOIN users_details ON users_details.users_id = reservation.users_id JOIN busses ON busses.id = reservation.busses_id WHERE reservation.users_id = ${id}`
       console.log('sql baru', sql)
       db.query(sql, function (err, results, fields) {
         if (err) {
