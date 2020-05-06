@@ -118,7 +118,8 @@ module.exports = {
     //   res.send(data)
     // }
     const { id } = req.params
-    const results = await BussesModel.deleteBusses(id)
+    const results = await BussesModel.deleteBuss(id)
+    console.log('deleeeteeeeeeeeeeeeeeeeeeeeeeeeeee', results)
     if (results) {
       const data = {
         success: true,

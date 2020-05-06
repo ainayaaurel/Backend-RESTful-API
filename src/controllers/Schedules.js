@@ -119,15 +119,15 @@ module.exports = {
     }
   },
   delete: async function (req, res) {
-    if (req.user.roleId !== 2) {
-      const data = {
-        success: false,
-        msg: 'Only Admin can access this feature',
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 2) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin can access this feature',
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
-    const results = await SchedulesModel.deleteBusses(id)
+    const results = await SchedulesModel.deleteBus(id)
     if (results) {
       const data = {
         success: true,

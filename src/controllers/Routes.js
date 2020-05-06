@@ -45,13 +45,13 @@ module.exports = {
     res.send(data)
   },
   create: async function (req, res) {
-    if (req.user.roleId !== 1) {
-      const data = {
-        success: false,
-        msg: 'Only Super Admin Can Access This Feature',
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 1) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Super Admin Can Access This Feature',
+    //   }
+    //   res.send(data)
+    // }
     const { departure, arrival } = req.body
     const results = await RoutesModel.createRoutes(departure, arrival)
     if (results) {
@@ -98,14 +98,15 @@ module.exports = {
     }
   },
   delete: async function (req, res) {
-    if (req.user.roleId !== 1) {
-      const data = {
-        success: false,
-        msg: 'Only Super Admin Can Access This Feature',
-      }
-      res.send(data)
-    }
+    // if (req.user.roleId !== 1) {
+    //   const data = {
+    //     success: false,
+    //     msg: 'Only Admin Can Access This Feature',
+    //   }
+    //   res.send(data)
+    // }
     const { id } = req.params
+    console.log('iniiiii id', req.params)
     const results = await RoutesModel.deleteRoutes(id)
     if (results) {
       const data = {

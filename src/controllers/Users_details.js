@@ -4,7 +4,7 @@ module.exports = {
   read: async function (req, res) {
     let { page, limit, search, sort } = req.query
     page = parseInt(page) || 1
-    limit = parseInt(limit) || 5
+    limit = parseInt(limit) || 10
 
     let key = search && Object.keys(search)[0]
     let value = search && Object.values(search)[0]
@@ -79,15 +79,15 @@ module.exports = {
     //   }
     //   res.send(data)
     // }
-    const picture = (req.file && req.file.filename) || null
-    const { id } = req.params
-    const { name, gender, address, phone, email } = req.body
+
+    const { id } = req.user
+    const { name, address, phone, email } = req.body
     delete req.body.arrival
     const results = await UserDetailsModel.updateUserDetails(
       id,
-      picture,
+
       name,
-      gender,
+
       address,
       phone,
       email
@@ -95,14 +95,14 @@ module.exports = {
     if (results) {
       const data = {
         success: true,
-        msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS UPDATE!`,
+        msg: `${name},${address}, ${phone}, ${email} SUCCESS UPDATE!`,
         data: { id, ...req.body },
       }
       res.send(data)
     } else {
       const data = {
         success: false,
-        msg: `${name}, ${gender}, ${address}, ${phone}, ${email} SUCCESS NOT UPDATE!`,
+        msg: `${name}, ${address}, ${phone}, ${email} SUCCESS NOT UPDATE!`,
         data: { id, ...req.body },
       }
       res.send(data)

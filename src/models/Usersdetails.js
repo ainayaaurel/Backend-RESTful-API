@@ -56,9 +56,18 @@ module.exports = {
       })
     })
   },
-  createUserDetails: function (picture, name, gender, address, phone, email, balance, usersId) {
+  createUserDetails: function (
+    picture,
+    name,
+    gender,
+    address,
+    phone,
+    email,
+    balance,
+    usersId
+  ) {
     const table = 'users_details'
-    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
+    picture = typeof picture === 'string' ? `'${picture}'` : picture
     return new Promise(function (resolve, reject) {
       const sql = `INSERT INTO ${table} (picture, name, gender, address, phone, email, balance, users_id) VALUES
       (${picture}, '${name}', '${gender}', '${address}', '${phone}', '${email}', '${balance}', '${usersId}')`
@@ -85,12 +94,13 @@ module.exports = {
       })
     })
   },
-  updateUserDetails: function (id, picture, name, gender, address, phone, email, balance) {
+  updateUserDetails: function (id, name, address, phone, email) {
     const table = 'users_details'
-    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
+    const sql = `UPDATE ${table} SET name='${name}', address='${address}',
+    phone='${phone}', email='${email}' WHERE users_id=${id}`
+    console.log('asdadada', sql)
     return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET picture='${picture}', name='${name}', gender='${gender}', address='${address}',
-      phone='${phone}', email='${email}', balance='${balance}' WHERE id=${id}`, function (err, results, fields) {
+      db.query(sql, function (err, results, fields) {
         if (err) {
           console.log(err)
         } else {
@@ -101,7 +111,7 @@ module.exports = {
   },
   updatePicture: function (id, picture) {
     const table = 'users_details'
-    picture = (typeof picture === 'string' ? `'${picture}'` : picture)
+    picture = typeof picture === 'string' ? `'${picture}'` : picture
     const sql = `UPDATE ${table} SET picture= ${picture} WHERE users_id=${id}`
     console.log(sql)
     return new Promise(function (resolve, reject) {
@@ -117,7 +127,11 @@ module.exports = {
   deleteUserDetails: function (id) {
     const table = 'users_details'
     return new Promise(function (resolve, reject) {
-      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (err, results, fields) {
+      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (
+        err,
+        results,
+        fields
+      ) {
         if (err) {
           reject(err)
         } else {
@@ -125,5 +139,5 @@ module.exports = {
         }
       })
     })
-  }
+  },
 }

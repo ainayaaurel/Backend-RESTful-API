@@ -24,7 +24,7 @@ module.exports = {
       const sql = `
       SELECT busses.id, busses.name, busses.class, busses.sheets, busses.price, agents.name_agents FROM ${table} JOIN agents ON 
       agents.id = busses.agents_id
-      WHERE busses.name LIKE '%${search.value}%'
+      WHERE busses.name LIKE '%${search.value}%' AND busses.is_deleted=0
       ORDER BY busses.id ${sort.value ? 'ASC' : 'DESC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log('show data', sql)
@@ -79,21 +79,27 @@ module.exports = {
     console.log(classbus)
     const table = 'busses'
     return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET name='${name}', class='${classbus}', sheets='${sheets}', price='${price}' WHERE id=${id}` // harusnya ad agents id
-        , function (err, results, fields) {
+      db.query(
+        `UPDATE ${table} SET name='${name}', class='${classbus}', sheets='${sheets}', price='${price}' WHERE id=${id}`, // harusnya ad agents id
+        function (err, results, fields) {
           if (err) {
             reject(err)
           } else {
             resolve(results)
           }
-        })
+        }
+      )
     })
   },
   // DELETE FROM table1 WHERE condition
   deleteBusses: function (id) {
     const table = 'busses'
     return new Promise(function (resolve, reject) {
-      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (err, results, fields) {
+      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (
+        err,
+        results,
+        fields
+      ) {
         if (err) {
           reject(err)
         } else {
@@ -101,5 +107,19 @@ module.exports = {
         }
       })
     })
-  }
+  },
+  deleteBuss: function (id) {
+    const table = 'busses'
+    const sql = `UPDATE ${table} SET is_deleted=1 WHERE id=${id}`
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err, results, fields) {
+        console.log('sql deleted deleted fdeleted', sql)
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
 }

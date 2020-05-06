@@ -29,7 +29,7 @@ const upload = multer({ storage, type, limits })
 UsersDetail.get('/', UsersDetailControllers.read)
 UsersDetail.get('/myprofile/', UsersDetailControllers.readById)
 UsersDetail.post('/', UsersDetailControllers.create)
-UsersDetail.patch('/:id', UsersDetailControllers.update)
+UsersDetail.patch('/', UsersDetailControllers.update)
 UsersDetail.put(
   '/updatepicture',
   upload.single('picture'),

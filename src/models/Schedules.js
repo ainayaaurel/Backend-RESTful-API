@@ -28,7 +28,9 @@ module.exports = {
       busses.class, busses.sheets, busses.price FROM ${table} JOIN routes ON routes.id = schedules.routes_id JOIN agents ON 
       agents.id = schedules.agents_id JOIN busses 
       ON busses.id = schedules.busses_id 
-      WHERE routes.departure_at LIKE '${search.value}%' AND date='${date}'
+      WHERE routes.departure_at LIKE '${
+        search.value
+      }%' AND date='${date}' AND schedules.is_deleted=0
       ORDER BY ${sortBy}  ${parseInt(sort.value) ? 'DESC' : 'ASC'}
       LIMIT ${perPage} OFFSET ${(page - 1) * perPage}`
       console.log('ini query', parseInt(sort.value), sql)
@@ -101,6 +103,20 @@ module.exports = {
         results,
         fields
       ) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+    })
+  },
+  deleteBus: function (id) {
+    const table = 'schedules'
+    const sql = `UPDATE ${table} SET is_deleted=1 WHERE id=${id}`
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err, results, fields) {
+        console.log('sql deleted deleted fdeleted', sql)
         if (err) {
           reject(err)
         } else {
