@@ -44,20 +44,27 @@ module.exports = {
   updateUser: function (id, username, password) {
     const table = 'users'
     return new Promise(function (resolve, reject) {
-      db.query(`UPDATE ${table} SET username='${username}',
-      password='${password}' WHERE id=${id}`, function (err, results, fields) {
-        if (err) {
-          console.log(err)
-        } else {
-          resolve(results)
+      db.query(
+        `UPDATE ${table} SET username='${username}',
+      password='${password}' WHERE id=${id}`,
+        function (err, results, fields) {
+          if (err) {
+            console.log(err)
+          } else {
+            resolve(results)
+          }
         }
-      })
+      )
     })
   },
   deleteUser: function (id) {
     const table = 'users'
     return new Promise(function (resolve, reject) {
-      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (err, results, fields) {
+      db.query(`DELETE FROM ${table} WHERE id=${id}`, function (
+        err,
+        results,
+        fields
+      ) {
         if (err) {
           reject(err)
         } else {
@@ -65,5 +72,5 @@ module.exports = {
         }
       })
     })
-  }
+  },
 }

@@ -1,6 +1,20 @@
 const db = require('../utils/db')
 
 module.exports = {
+  getSchedulesDetail: function (id) {
+    const table = 'schedules'
+    return new Promise(function (resolve, reject) {
+      const sql = `SELECT * FROM ${table} WHERE id='${id}'`
+      console.log(sql)
+      db.query(sql, function (err, results, fields) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+      })
+    })
+  },
   getSchedulesById: function (id) {
     const table = 'schedules'
     return new Promise(function (resolve, reject) {
@@ -50,7 +64,7 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       const sql = `
       SELECT COUNT(*) AS total FROM ${table}
-      WHERE time LIKE '${search.value}%'`
+      WHERE time LIKE '${search.value}%' AND is_deleted=0`
       console.log('ini get total schedules', sql)
       db.query(sql, function (err, results, fields) {
         if (err) {

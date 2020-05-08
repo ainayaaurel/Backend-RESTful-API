@@ -27,9 +27,12 @@ module.exports = {
     // const {id} = req.user || (req.user.id)
     const { id } = req.user
     const { routesId, bussesId, agentsId, schedulesId, seat } = req.body
+    console.log(req.body.reservationId)
+    console.log(req.user)
     const price = await SchedulesModel.getSchedulesById(schedulesId)
     const userSaldo = await UserModel.getUserDetailByUserId(id)
-    console.log('ini price', price.price)
+    const scheduleDetail = await SchedulesModel.getSchedulesDetail(schedulesId)
+    console.log('ini price', scheduleDetail)
     console.log('ini saldo', userSaldo[0].balance)
     if (price.price > userSaldo[0].balance) {
       res.send({
@@ -43,10 +46,10 @@ module.exports = {
         // console.log('ini hasil salod', hasil)
         const results = await ReservationsModel.createReservations(
           id,
-          routesId,
+          scheduleDetail.routes_id,
           schedulesId,
-          agentsId,
-          bussesId,
+          scheduleDetail.agents_id,
+          scheduleDetail.busses_id,
           seat
         )
         const detailsReservations = await ReservationsModel.dataReservations(
