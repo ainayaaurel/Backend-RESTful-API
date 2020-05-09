@@ -60,76 +60,84 @@ module.exports = {
     }
   },
   register: async function (req, res) {
-    const picture = (req.file && req.file.filename) || null
-    const {
-      username,
-      password,
-      name,
-      gender,
-      address,
-      phone,
-      email,
-      balance,
-    } = req.body
-    console.log(req.body)
-    const checkUser = await AuthModel.checkUsername(username)
-    const checkEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    if (checkEmail.test(email)) {
-      if (checkUser !== 0) {
-        const data = {
-          success: false,
-          msg: 'User already used',
-        }
-        res.send(data)
-      } else {
-        const encryptedPassword = bcrypt.hashSync(password)
-        const results = await UserModel.createUser(username, encryptedPassword)
-        const results1 = await UserDetailsModel.createUserDetails(
-          picture,
-          name,
-          gender,
-          address,
-          phone,
-          email,
-          balance,
-          results
-        )
-        if (results) {
-          if (await AuthModel.createVerificationCode(results, uuid())) {
-            const data = {
-              success: true,
-              msg: 'Register Successfully, Next you can Verify first',
+    try {
+      console.log(req.file, 'CAAAA')
+      const picture = (req.file && req.file.filename) || null
+      const {
+        username,
+        password,
+        name,
+        gender,
+        address,
+        phone,
+        email,
+      } = req.body
+      const balance = req.body.balance || 0
+      console.log(req.body)
+      const checkUser = await AuthModel.checkUsername(username)
+      const checkEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      if (checkEmail.test(email)) {
+        if (checkUser !== 0) {
+          const data = {
+            success: false,
+            msg: 'User already used',
+          }
+          res.send(data)
+        } else {
+          const encryptedPassword = bcrypt.hashSync(password)
+          const results = await UserModel.createUser(
+            username,
+            encryptedPassword
+          )
+          const results1 = await UserDetailsModel.createUserDetails(
+            picture,
+            name,
+            gender,
+            address,
+            phone,
+            email,
+            balance,
+            results
+          )
+          if (results) {
+            if (await AuthModel.createVerificationCode(results, uuid())) {
+              const data = {
+                success: true,
+                msg: 'Register Successfully, Next you can Verify first',
+              }
+              res.send(data)
+            } else {
+              const data = {
+                success: false,
+                msg: "Verification code couldn't be generated",
+              }
+              res.send(data)
             }
-            res.send(data)
           } else {
             const data = {
               success: false,
-              msg: "Verification code couldn't be generated",
+              msg: 'Register Failed',
             }
             res.send(data)
           }
-        } else {
-          const data = {
-            success: false,
-            msg: 'Register Failed',
+          if (results1) {
+            const data = {
+              success: true,
+              msg: 'Create Biodata is Success',
+              results1,
+            }
+            res.send(data)
           }
-          res.send(data)
         }
-        if (results1) {
-          const data = {
-            success: true,
-            msg: 'Create Biodata is Success',
-            results1,
-          }
-          res.send(data)
+      } else {
+        const data = {
+          success: false,
+          msg: 'Email Not Valid',
         }
+        res.send(data)
       }
-    } else {
-      const data = {
-        success: false,
-        msg: 'Email Not Valid',
-      }
-      res.send(data)
+    } catch (error) {
+      console.log(error)
     }
   },
   verify: async function (req, res) {

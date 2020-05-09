@@ -29,7 +29,7 @@ module.exports = {
   createUser: function (username, password, roleId) {
     roleId = roleId || 3
     const table = 'users'
-    const query = `INSERT INTO ${table} ( username, password, role_id ) VALUES ('${username}', '${password}', ${roleId})`
+    const query = `INSERT INTO ${table} ( username, password, role_id, is_active, is_verified ) VALUES ('${username}', '${password}', ${roleId}, 1, 1)`
     return new Promise(function (resolve, reject) {
       db.query(query, function (err, results, fields) {
         console.log(query)
